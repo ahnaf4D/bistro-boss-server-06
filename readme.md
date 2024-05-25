@@ -1,4 +1,4 @@
-# Bistro Boss Restaurant Part 05 Server
+# Bistro Boss Restaurant Part 06 Server
 
 These is a Part 06 server of bistro boss restaurant.
 
