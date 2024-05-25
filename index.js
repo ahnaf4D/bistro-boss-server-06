@@ -1,15 +1,25 @@
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+// const { createProxyMiddleware } = require('http-proxy-middleware');
 const jwt = require('jsonwebtoken');
 const app = express();
-
+// app.use(
+//   '/api',
+//   createProxyMiddleware({
+//     target: 'https://api.imgbb.com',
+//     changeOrigin: true,
+//     pathRewrite: {
+//       '^/api': '/1/upload', // rewrite path
+//     },
+//   })
+// );
 const port = process.env.PORT || 3000;
 // middlewares
 app.use(express.json());
 app.use(cors());
 
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.zrua0aj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'`;
 const client = new MongoClient(uri, {
   serverApi: {
@@ -118,6 +128,12 @@ async function run() {
     app.get('/menu', async (req, res) => {
       const result = await menuCollection.find().toArray();
       res.status(200).send(result);
+    });
+    app.post('/menu', async (req, res) => {
+      const item = req.body;
+      // console.log(item);
+      const result = await menuCollection.insertOne(item);
+      res.send(result);
     });
     app.get('/reviews', async (req, res) => {
       const result = await reviewCollection.find().toArray();
