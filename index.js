@@ -7,7 +7,17 @@ const app = express();
 const port = process.env.PORT || 3000;
 // middlewares
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'https://ph-bistro-boss.web.app',
+      'https://ph-bistro-boss.firebaseapp.com',
+    ],
+    credentials: true,
+  })
+);
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.zrua0aj.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'`;
 const client = new MongoClient(uri, {
@@ -43,7 +53,6 @@ async function run() {
     });
     // MiddleWares
     const verifyTokens = (req, res, next) => {
-      console.log('Inside the verify token', req.headers.authorization);
       if (!req.headers.authorization) {
         return res.status(401).send({ massage: 'unauthorized access' });
       }
@@ -69,7 +78,6 @@ async function run() {
 
     // user related apis
     app.get('/users', verifyTokens, verifyAdmin, async (req, res) => {
-      console.log('hit on the users');
       const result = await userCollection.find().toArray();
       res.status(200).send(result);
     });
